@@ -1,0 +1,32 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<jsp:include page="menu.jsp"/>
+
+<h1 align="center">Product Form</h1> <hr/>
+
+   <div align="center">
+    <form:form modelAttribute="product" action="./updateProduct">
+    
+    	Product ID: <form:input path="productId" readonly="true"/> <br/>
+    	Name: <form:input path="productName"/> <br/>
+    	Price: <form:input path="Price"/> <br/>
+    	Description: <form:input path="De"/> <br/>
+    	Brand ID: <form:input path="brand.brandId"/> <br/>
+    	Category ID: <form:input path="category.catId"/><br/>
+    	
+    	<form:button>Update</form:button>
+    	
+    	
+    
+    </form:form>
+    
+    </div>
+
+
+</body>
+</html>
