@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.crud.ecart.dao.BrandDao;
 import com.crud.ecart.globalexceptionhandeler.ElementNotFoundException;
+import com.crud.ecart.globalexceptionhandeler.InputUserException;
 import com.crud.ecart.model.Brand;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,8 @@ public class BrandServiceImpl implements BrandService {
 
 	@Override
 	public Brand addNewBrand(Brand brand) {
-		if (brand.getBrandName().isEmpty() || brand.getBrandName().length() == 0) {
-			throw new NoSuchElementException();
+		if (brand.getBrandName().isEmpty() || brand.getBrandName().length() == 0 || brand.getBrandName().isBlank()) {
+			throw new InputUserException();
 		}
 
 		Brand brandAdded = brandDao.save(brand);
@@ -37,9 +38,9 @@ public class BrandServiceImpl implements BrandService {
 	public List<Brand> addNewListOfBrands(List<Brand> brand) {
 		List<Brand> brandsLists = brandDao.saveAll(brand);
 		for (Brand newBrand : brand) {
-			if (newBrand.getBrandName().isEmpty()) {
-				if (newBrand.getBrandName().length() == 0) {
-					throw new NoSuchElementException();
+			if (newBrand.getBrandName().isBlank()) {
+				if (newBrand.getBrandName().length() == 0 || newBrand.getBrandName().isEmpty()) {
+					throw new InputUserException();
 				}
 			}
 		}
@@ -56,12 +57,11 @@ public class BrandServiceImpl implements BrandService {
 		if (!existingBrand.isPresent()) {
 			throw new ElementNotFoundException();
 		}
-
-		if (brand.getBrandName().isEmpty() || brand.getBrandName().length() == 0) {
-			throw new NoSuchElementException();
-		}
 		Brand existingBrands = brandDao.findById(brand.getBrandId()).orElse(null);
 		existingBrands.setBrandId(brand.getBrandId());
+		if (brand.getBrandName().isEmpty() || brand.getBrandName().length() == 0 || brand.getBrandName().isEmpty()) {
+			throw new InputUserException();
+		}
 		existingBrands.setBrandName(brand.getBrandName());
 		String methodName = "updateBrand()";
 		log.info(methodName + " called");
@@ -70,34 +70,27 @@ public class BrandServiceImpl implements BrandService {
 
 	@Override
 	public List<Brand> updateMultipleBrands(List<Brand> brand) {
-		List<Brand> brandlists = new ArrayList<Brand>();
-		for (Brand newBrand : brand) {
-			if (newBrand.getBrandName().isEmpty()) {
-				if (newBrand.getBrandName().length() == 0) {
-					throw new NoSuchElementException();
-				}
-			}
-		}
-
-		for (Brand brandId : brand) {
-			Optional<Brand> existingBrandId = brandDao.findById(brandId.getBrandId());
-			if (!existingBrandId.isPresent()) {
+		List<Brand> updateBrandLists = new ArrayList<Brand>();
+		for (Brand eachExistingBrand : brand) {
+			Optional<Brand> eachbrand = brandDao.findById(eachExistingBrand.getBrandId());
+			if (!eachbrand.isPresent()) {
 				throw new ElementNotFoundException();
 			}
 		}
 
-		for (Brand eachBrand : brand) {
-			Optional<Brand> existingBrand = brandDao.findById(eachBrand.getBrandId());
-			if (existingBrand.isPresent()) {
-				Brand newBrand = existingBrand.get();
-				newBrand.setBrandName(eachBrand.getBrandName());
-				brandDao.save(newBrand);
-				brandlists.add(newBrand);
+		for (Brand eachExistingBrand : brand) {
+			Brand updateBrand = brandDao.findById(eachExistingBrand.getBrandId()).orElse(null);
+			updateBrand.setBrandId(eachExistingBrand.getBrandId());
+			if (eachExistingBrand.getBrandName().isEmpty() || eachExistingBrand.getBrandName().length() == 0
+					|| eachExistingBrand.getBrandName().isBlank()) {
+				throw new InputUserException();
 			}
+			updateBrand.setBrandName(eachExistingBrand.getBrandName());
+			brandDao.save(eachExistingBrand);
+			updateBrandLists.add(updateBrand);
+
 		}
-		String methodName = "updateMultipleBrands()";
-		log.info(methodName + " called");
-		return brandlists;
+		return updateBrandLists;
 	}
 
 	@Override
@@ -107,32 +100,32 @@ public class BrandServiceImpl implements BrandService {
 		if (!existingBrand.isPresent()) {
 			throw new ElementNotFoundException();
 		}
-		String methodName="findById()";
-		log.info(methodName+" called");
+		String methodName = "findById()";
+		log.info(methodName + " called");
 		return existingBrand;
 	}
 
 	@Override
 	public List<Brand> fetchAllBrand() {
-		List<Brand> existingList=brandDao.findAll();
-		if(existingList.isEmpty()) {
+		List<Brand> existingList = brandDao.findAll();
+		if (existingList.isEmpty()) {
 			throw new ElementNotFoundException();
 		}
-		String methodName="fetchAllBrand()";
-		log.info(methodName+" called");
+		String methodName = "fetchAllBrand()";
+		log.info(methodName + " called");
 		return existingList;
 	}
 
 	@Override
 	public String deleteById(int brandId) {
-	 
-		Optional<Brand> existingBrandId=brandDao.findById(brandId);
-		if(!existingBrandId.isPresent()) {
+
+		Optional<Brand> existingBrandId = brandDao.findById(brandId);
+		if (!existingBrandId.isPresent()) {
 			throw new ElementNotFoundException();
 		}
 		brandDao.deleteById(brandId);
-		String method="deleteById()";
-		log.info(method+" called");
+		String method = "deleteById()";
+		log.info(method + " called");
 		return "Deleted Succesfully";
 	}
 

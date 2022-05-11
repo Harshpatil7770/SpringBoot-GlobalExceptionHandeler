@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.crud.ecart.dao.CategoryDao;
 import com.crud.ecart.globalexceptionhandeler.ElementNotFoundException;
+import com.crud.ecart.globalexceptionhandeler.InputUserException;
 import com.crud.ecart.model.Category;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,9 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public Category addNewCategoey(Category category) {
 
-		if (category.getCategoryName().isEmpty() || category.getCategoryName().length() == 0) {
-			throw new NoSuchElementException();
+		if (category.getCategoryName().isEmpty() || category.getCategoryName().length() == 0
+				|| category.getCategoryName().isBlank()) {
+			throw new InputUserException();
 		}
 
 		Category newCategory = categoryDao.save(category);
@@ -35,8 +37,15 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public Category updateCategory(Category category) {
-		if (category.getCategoryName().isEmpty() || category.getCategoryName().length() == 0) {
-			throw new NoSuchElementException();
+
+		Optional<Category> existCategory = categoryDao.findById(category.getCategoryId());
+		if (!existCategory.isPresent()) {
+			throw new ElementNotFoundException();
+		}
+
+		if (category.getCategoryName().isEmpty() || category.getCategoryName().length() == 0
+				|| category.getCategoryName().isBlank()) {
+			throw new InputUserException();
 		}
 
 		Category existingCategory = categoryDao.findById(category.getCategoryId()).orElse(null);
@@ -76,32 +85,27 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public List<Category> updateListOfCategories(List<Category> category) {
-		List<Category> catsLists = null;
-		for (Category catNames : category) {
-			if (catNames.getCategoryName().isBlank()) {
-				if (catNames.getCategoryName().length() == 0) {
-
-					throw new NoSuchElementException();
-
-				}
+		List<Category> updatedLists = new ArrayList<Category>();
+		for (Category existCat : category) {
+			Optional<Category> eachCat = categoryDao.findById(existCat.getCategoryId());
+			if (!eachCat.isPresent()) {
+				throw new ElementNotFoundException();
 			}
+
 		}
 
-		catsLists = new ArrayList<Category>();
-		for (Category eachcatNames : category) {
-
-			Optional<Category> exisitingCats = categoryDao.findById(eachcatNames.getCategoryId());
-			if (exisitingCats.isPresent()) {
-				Category newCategory = exisitingCats.get();
-				newCategory.setCategoryName(eachcatNames.getCategoryName());
-				categoryDao.save(newCategory);
-				catsLists.add(newCategory);
+		for (Category existCat : category) {
+			Category updatedCategory = categoryDao.findById(existCat.getCategoryId()).orElse(null);
+			updatedCategory.setCategoryId(existCat.getCategoryId());
+			if (existCat.getCategoryName().isEmpty() || existCat.getCategoryName().isBlank()
+					|| existCat.getCategoryName().length() == 0) {
+				throw new InputUserException();
 			}
+			updatedCategory.setCategoryName(existCat.getCategoryName());
+			categoryDao.save(updatedCategory);
+			updatedLists.add(existCat);
 		}
-		String methodName = "updateListOfCategories()";
-		log.info(methodName + " called");
-		return catsLists;
-
+		return updatedLists;
 	}
 
 	@Override

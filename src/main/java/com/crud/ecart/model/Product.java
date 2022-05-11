@@ -1,5 +1,6 @@
 package com.crud.ecart.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="products")
+@Table(name = "products")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,21 +23,21 @@ public class Product {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="product_id")
+	@Column(name = "product_id")
 	private int productId;
-	
-	@Column(name="product_name")
+
+	@Column(name = "product_name")
 	private String productName;
-	
-	@Column(name="price")
+
+	@Column(name = "price")
 	private double price;
-	
-	@Column(name="description")
+
+	@Column(name = "description")
 	private String description;
-	
-	@ManyToOne
+
+	@ManyToOne(cascade = CascadeType.ALL)
 	private Brand brand;
-	
-	@ManyToOne
+
+	@ManyToOne(cascade = CascadeType.ALL)
 	private Category category;
 }

@@ -1,6 +1,7 @@
 package com.crud.ecart.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,5 +16,9 @@ public interface ProductDao extends JpaRepository<Product, Integer> {
 
 	@Query(value="select * from products p inner join categories c on p.category_category_id=c.category_id where c.category_name=?",nativeQuery=true)
 	List<Product> findByCatgoryName(String categoryName);
+
+//	List<Product> findByBrand(String brandName);
+
+//	List<Product> findByBrand(String brandName);
 
 }

@@ -21,7 +21,7 @@ public interface ProductService {
 
 	String deleteProduct(int productId);
 
-	List<Product> findByBrandName(String brandName);
+	List<Product> findByBrand(String brandName);
 
 	List<Product> findByCategoryName(String categoryName);
 }

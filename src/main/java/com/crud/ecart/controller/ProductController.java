@@ -20,26 +20,25 @@ import com.crud.ecart.service.ProductService;
 
 import lombok.extern.slf4j.Slf4j;
 
-//@RestController
-//@RequestMapping("/api/product")
+@RestController
+@RequestMapping("/api/product")
 @Slf4j
-@Controller
+//@Controller
 public class ProductController {
 
 	@Autowired
 	ProductService productService;
 
+//	@RequestMapping("/")
+//	public String welcome() {
+//		return "index";
+//	}
 
-	@RequestMapping("/")
-	public String welcome() {
-		return "index";
-	}
-	
-	@RequestMapping("getproduct")
-	public String getproduct() {
-		return "api/product/getproduct";
-	}
-	
+////	@RequestMapping("getproduct")
+////	public String getproduct() {
+////		return "api/product/getproduct";
+//	}
+
 	@PostMapping("/save")
 	Product addNewProduct(@RequestBody Product product) {
 		Product newProduct = productService.addNewProduct(product);
@@ -84,13 +83,13 @@ public class ProductController {
 
 	}
 
-	//@RequestMapping("/findAll")
+	// @RequestMapping("/findAll")
 	@GetMapping("/findAll")
 	public List<Product> fetchAllProducts(Model model) {
 		List<Product> existingProductLists = productService.fetchAllProducts();
 		String methodName = "fetchAllProducts()";
 		log.info(methodName + " called");
-		model.addAttribute("existingProductLists",existingProductLists);
+		model.addAttribute("existingProductLists", existingProductLists);
 		return existingProductLists;
 	}
 
@@ -104,14 +103,14 @@ public class ProductController {
 
 	@GetMapping("/find/{brandName}")
 	public List<Product> fetchProductByBrandName(@PathVariable String brandName) {
-		List<Product> existingProduct = productService.findByBrandName(brandName);
+		List<Product> existingProduct = productService.findByBrand(brandName);
 		String methodName = "fetchProductByBrandName()";
 		log.info(methodName + " called");
 		return existingProduct;
 	}
-	
+
 	@GetMapping("/category/{categoryName}")
-	public List<Product> fetchProductByCategoryName(@PathVariable String categoryName){
+	public List<Product> fetchProductByCategoryName(@PathVariable String categoryName) {
 		List<Product> existingProduct = productService.findByCategoryName(categoryName);
 		String methodName = "fetchProductByCategoryName()";
 		log.info(methodName + " called");

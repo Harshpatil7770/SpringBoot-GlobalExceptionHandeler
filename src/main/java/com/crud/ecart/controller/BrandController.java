@@ -60,7 +60,7 @@ public class BrandController {
 	}
 
 	@GetMapping("/{brandId}")
-	public Optional<Brand> findBtId(@PathVariable int brandId) {
+	public Optional<Brand> findById(@PathVariable int brandId) {
 		String methodName = "findBtId()";
 		log.info(methodName + " called");
 
@@ -82,7 +82,7 @@ public class BrandController {
 		String method = "deleteById()";
 		log.info(method + " called");
 		brandService.deleteById(brandId);
-		return " Deleted Brand Succesfully !";
+		return "Deleted Brand Succesfully !";
 
 	}
 }

@@ -25,4 +25,9 @@ public class GlobalExceptionHandel extends ResponseEntityExceptionHandler {
 	public ResponseEntity<String> handelNegativeValueExpection(NegativeValueExpection exception) {
 		return new ResponseEntity<String>("Enter Positive Values", HttpStatus.BAD_REQUEST);
 	}
+
+	@ExceptionHandler(InputUserException.class)
+	public ResponseEntity<String> inputUserException(InputUserException excpetion) {
+		return new ResponseEntity<String>("Please Check Inputs !", HttpStatus.OK);
+	}
 }
